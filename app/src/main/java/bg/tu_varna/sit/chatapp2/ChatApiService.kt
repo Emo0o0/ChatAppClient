@@ -12,7 +12,6 @@ import bg.tu_varna.sit.chatapp2.model.response.LoginResponse
 import bg.tu_varna.sit.chatapp2.model.response.RegisterResponse
 import bg.tu_varna.sit.chatapp2.model.response.UserResponse
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.PATCH

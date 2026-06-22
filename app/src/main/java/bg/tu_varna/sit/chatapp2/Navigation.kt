@@ -13,10 +13,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import bg.tu_varna.sit.chatapp2.screen.ChatRoomScreen
-import bg.tu_varna.sit.chatapp2.screen.LoginScreen
-import bg.tu_varna.sit.chatapp2.screen.RegisterScreen
-import bg.tu_varna.sit.chatapp2.screen.UserListScreen
+//import bg.tu_varna.sit.chatapp2.screen.ChatRoomScreen
+//import bg.tu_varna.sit.chatapp2.screen.LoginScreen
+//import bg.tu_varna.sit.chatapp2.screen.RegisterScreen
+//import bg.tu_varna.sit.chatapp2.screen.UserListScreen
 import bg.tu_varna.sit.chatapp2.view.ChatRoomScreen
 import bg.tu_varna.sit.chatapp2.view.ChatViewModel
 import bg.tu_varna.sit.chatapp2.view.LoginScreen

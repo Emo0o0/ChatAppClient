@@ -157,7 +157,6 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    //TODO see this
     fun getOrCreatePrivateRoom(otherUserId: String, onSuccess: (String) -> Unit) {
         viewModelScope.launch {
             try {
@@ -175,7 +174,6 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    //TODO what is runCatching
     fun loadInitialMessages(roomId: String) {
         viewModelScope.launch {
             try {
@@ -251,8 +249,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                 if (response.success) {
                     _messages.value = _messages.value.map { msg ->
                         if (msg.id == messageId) {
-                            //TODO check this
-                            // Update text AND change status to EDITED
+                            // Update text & change status to EDITED
                             msg.copy(text = newContent, status = MessageStatus.EDITED)
                         } else msg
                     }
