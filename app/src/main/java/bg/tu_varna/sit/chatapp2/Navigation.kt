@@ -13,6 +13,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import bg.tu_varna.sit.chatapp2.screen.ChatRoomScreen
+import bg.tu_varna.sit.chatapp2.screen.LoginScreen
+import bg.tu_varna.sit.chatapp2.screen.RegisterScreen
+import bg.tu_varna.sit.chatapp2.screen.UserListScreen
 import bg.tu_varna.sit.chatapp2.view.ChatRoomScreen
 import bg.tu_varna.sit.chatapp2.view.ChatViewModel
 import bg.tu_varna.sit.chatapp2.view.LoginScreen
@@ -82,7 +86,6 @@ fun ChatApp() {
                             onError = { error -> errorMessage = error }
                         )
                     },
-                    // Direct the user to the register screen layout
                     onRegisterNavigate = {
                         navController.navigate("register")
                     }
@@ -101,13 +104,11 @@ fun ChatApp() {
                         username = username,
                         password = password,
                         onSuccess = {
-                            // On successful database entry, return to the login screen layout
                             navController.popBackStack()
                         },
                         onError = { error -> errorMessage = error }
                     )
                 },
-                // Allow the user to manually click back to login without submitting
                 onBackToLoginClick = {
                     navController.popBackStack()
                 }
@@ -141,7 +142,6 @@ fun ChatApp() {
             val roomId = backStackEntry.arguments?.getString("roomId") ?: return@composable
             val userName = backStackEntry.arguments?.getString("userName") ?: "Chat"
 
-            // Connect when the screen opens
             LaunchedEffect(roomId) {
                 viewModel.connectToRoom(roomId)
             }

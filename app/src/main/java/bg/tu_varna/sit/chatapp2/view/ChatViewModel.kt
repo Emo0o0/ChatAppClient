@@ -114,16 +114,13 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     ) {
         viewModelScope.launch {
             try {
-                // Call Quarkus backend
                 val response = apiService.login(LoginRequest(username, password))
 
-                // Save the ID to DataStore permanently
                 getApplication<Application>().dataStore.edit { preferences ->
                     preferences[USER_ID_KEY] = response.id.toString()
                 }
 
-                // Trigger navigation
-                onSuccess()
+                onSuccess() //nav
             } catch (e: Exception) {
                 e.printStackTrace()
                 onError("Login failed. Check your credentials.")
@@ -141,7 +138,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 apiService.register(RegisterRequest(email, username, password))
-                onSuccess() // Notify UI to navigate back to Login
+                onSuccess() //nav
             } catch (e: Exception) {
                 e.printStackTrace()
                 onError("Registration failed for some reason...")
@@ -160,28 +157,25 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    //TODO see this
     fun getOrCreatePrivateRoom(otherUserId: String, onSuccess: (String) -> Unit) {
         viewModelScope.launch {
             try {
-                // Get the currently logged-in user's ID
                 val currentId = _currentUserId.value ?: return@launch
 
-                // Make the POST request
                 val response = apiService.getPrivateRoom(
                     currentUserId = currentId,
                     otherUserId = otherUserId
                 )
 
-                // Pass the generated room ID back to the UI
                 onSuccess(response.roomId.toString())
             } catch (e: Exception) {
                 e.printStackTrace()
-                // Optionally handle errors here (e.g., show a Toast)
             }
         }
     }
 
-    // 1. In loadInitialMessages()
+    //TODO what is runCatching
     fun loadInitialMessages(roomId: String) {
         viewModelScope.launch {
             try {
@@ -195,7 +189,6 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                         id = msg.id,
                         text = msg.content,
                         isMine = msg.senderId.toString() == currentId,
-                        // Safely parse the string to the Enum, defaulting to SENT if it fails
                         status = runCatching { MessageStatus.valueOf(msg.messageStatus) }
                             .getOrDefault(MessageStatus.SENT)
                     )
@@ -209,7 +202,6 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loadMoreMessages(roomId: String) {
-        // Don't fetch if already fetching or if there are no more older messages
         if (isLoadingMore || isLastPage) return
 
         viewModelScope.launch {
@@ -218,16 +210,16 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                 val currentId = _currentUserId.value ?: return@launch
                 val roomIdLong = roomId.toLongOrNull() ?: return@launch
 
-                // Since Index 0 is the newest, the last item in our list is the oldest.
-                // We find the oldest message that actually has a database ID.
+                //0 - newest
+                //find oldest
                 val oldestMessage = _messages.value.lastOrNull { it.id != null }
                 val msgId = oldestMessage?.id ?: return@launch
 
-                // Fetch the next 50 messages BEFORE that ID
+                // get next 10 before the oldest
                 val response = apiService.getBeforeMessages(roomIdLong, msgId, 10)
 
                 if (response.messages.isEmpty()) {
-                    isLastPage = true // No more messages to load
+                    isLastPage = true
                     return@launch
                 }
 
@@ -241,7 +233,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                     )
                 }
 
-                // Append the older messages to the END of our current list
+                //append old at the end
                 _messages.value = _messages.value + olderHistory
 
             } catch (e: Exception) {
@@ -259,6 +251,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                 if (response.success) {
                     _messages.value = _messages.value.map { msg ->
                         if (msg.id == messageId) {
+                            //TODO check this
                             // Update text AND change status to EDITED
                             msg.copy(text = newContent, status = MessageStatus.EDITED)
                         } else msg
@@ -277,7 +270,6 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                 if (response.success) {
                     _messages.value = _messages.value.map { msg ->
                         if (msg.id == messageId) {
-                            // Keep the message in the list, but change status to DELETED
                             msg.copy(status = MessageStatus.DELETED)
                         } else msg
                     }

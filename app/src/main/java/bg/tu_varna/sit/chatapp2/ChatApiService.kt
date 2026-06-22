@@ -35,12 +35,11 @@ interface ChatApiService {
         @Path("userId2") otherUserId: String,
     ): ChatRoomResponse
 
-    //Chat messages API
 
+    //Chat messages API
     @PATCH("/chat/edit")
     suspend fun editMessage(@Body request: EditMessageRequest): EditMessageResponse
 
-    // Workaround: Standard @DELETE doesn't allow bodies. @HTTP allows us to specify it manually.
     @HTTP(method = "DELETE", path = "/chat/delete", hasBody = true)
     suspend fun deleteMessage(@Body request: DeleteMessageRequest): DeleteMessageResponse
 
